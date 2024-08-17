@@ -11,6 +11,11 @@ jobs:
     steps:
       - run: echo "Increment major/minor/patch version"
 
+  squash-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Here list all the commits as a list in a single commit"
+
   create-release:
     runs-on: ubuntu-latest
     steps:
