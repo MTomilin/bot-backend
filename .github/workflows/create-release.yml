@@ -9,7 +9,24 @@ jobs:
   upgrade-version:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Increment major/minor/patch version"
+      - uses: actions/checkout@v4
+      - name: Get current version
+        id: get_version
+        run: echo ::set-output name=version::$(git describe --abbrev=0 --tags)
+      - name: Determine version type
+        id: bump_version
+        run: |
+          export major=$(echo ${{ steps.get_version.outputs.version }} | cut -d '.' -f 1)
+          export minor=$(echo ${{ steps.get_version.outputs.version }} | cut -d '.' -f 2)
+          export patch=$(echo ${{ steps.get_version.outputs.version }} | cut -d '.' -f 3)
+          
+          if [ -n "${{ github.event.pull_request.labels.find(x => x.name == 'major') }}" ]; then
+            echo "::set-output name=version::${major}.0.0"
+          elif [ -n "${{ github.event.pull_request.labels.find(x => x.name == 'minor') }}" ]; then
+            echo "::set-output name=version::${major}.${minor+1}.0"
+          else
+            echo "::set-output name=version::${major}.${minor}.${patch+1}"
+          fi
 
   squash-commit:
     runs-on: ubuntu-latest
