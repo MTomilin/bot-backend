@@ -18,4 +18,4 @@ jobs:
   e2e-tests:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Some end-to-end tests here"
+      - run: yarn test:e2e
